@@ -1,0 +1,32 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: adminpass
+    volumes:
+      - mongo_data:/data/db
+      - ./mongo-init:/docker-entrypoint-initdb.d  # opcional: scripts .js de init
+
+  api:
+    image: node:20-alpine
+    container_name: auth-api
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: sh -c "yarn install && yarn dev"
+    environment:
+      MONGO_URI: mongodb://admin:adminpass@mongo:27017/auth?authSource=admin
+      PORT: 3000
+    depends_on:
+      - mongo
+    ports:
+      - "3000:3000"
+
+volumes:
+  mongo_data:
+
+  # EJEMPLO DE DOCKER COMPOSE PARA UNA APP DE AUTENTICACION CON MONGODB Y NODEJS/EXPRESS PARA VERLO DESPUES

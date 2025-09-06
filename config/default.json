@@ -1,0 +1,5 @@
+{
+  "port": 3000,
+  "dbUri": "mongodb://admin:adminpass@localhost:27017/auth?authSource=admin",
+  "logLevel": "info"
+}
