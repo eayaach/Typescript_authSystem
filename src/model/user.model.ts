@@ -1,8 +1,17 @@
-import {modelOptions, prop, Severity , pre} from "@typegoose/typegoose"
+import {modelOptions, prop, Severity , pre, index, getModelForClass} from "@typegoose/typegoose"
 import type { DocumentType as TGDocumentType } from '@typegoose/typegoose';
 import argon2 from "argon2";
 import log from "../utils/logger"
 import { nanoid } from "nanoid";
+
+
+export const privateFields = [
+  "password",
+  "__v",
+  "verificationCode",
+  "passwordResetCode",
+  "verified",
+];
 
 
 @pre<User>("save", async function() {
@@ -42,6 +51,7 @@ export class User {
     // importante para funturo al decit this: TGDocumentType<User> estamos diciendo que el this es del tipo documento de mongoose
     // por lo tanto tenemos acceso a los metodos de mongoose como isModified etc
     // y sabemos que tendra email, password etc
+    // esta parte es modificable dependiendo de si usamor postgres, mysql etc
     async validatePassword(this: TGDocumentType<User>, candidatePassword: string) {
     try {
       return await argon2.verify(this.password, candidatePassword);
@@ -51,3 +61,7 @@ export class User {
     }
   }
 }
+
+const UserModel = getModelForClass(User);
+
+export default UserModel;

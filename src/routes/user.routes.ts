@@ -1,13 +1,14 @@
 import express, { Router } from 'express';
-
+import { validateResource } from '../middleware/validateResource';
+import { createUserSchema } from '../schemas/user.schema';
+import { createUserHandler } from '../controller/user.controller';
+import { create } from 'lodash';
 
 const router: Router = express.Router();
 
 
 // create user route
-router.post('/register', (req, res) => {
-
-});
+router.post('/create', validateResource(createUserSchema), createUserHandler);
 
 // verify user email route
 router.get('/verify-email', (req, res) => {
